@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>삼성중공업 RPA 테스트 사이트</title>
+    <style>
+        body { font-family: 'Malgun Gothic', sans-serif; line-height: 1.6; padding: 20px; background-color: #f4f7f9; }
+        nav { background: #0054a6; color: white; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+        section { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h2 { font-size: 1.2em; color: #333; border-left: 5px solid #0054a6; padding-left: 10px; }
+        .result-msg { margin-top: 10px; color: #d9534f; font-weight: bold; }
+        input, select, button { padding: 8px; margin: 5px 0; border: 1px solid #ccc; border-radius: 4px; }
+        button { cursor: pointer; background: #0054a6; color: white; border: none; transition: 0.3s; }
+        button:hover { background: #003d7a; }
+        .hidden { display: none; }
+        .info-text { font-size: 0.85em; color: #666; margin-bottom: 10px; }
+        .random-info { font-size: 0.8em; color: #ef4444; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <span style="font-size: 1.5em; font-weight: bold;">삼성중공업</span> | RPA 테스트 사이트
+    </nav>
+
+    <section id="section1">
+        <h2>1. 셀렉트 박스 선택</h2>
+        프로젝트번호 : 
+        <select id="selectBox">
+            <option value="">--선택--</option>
+            <option value="1">SBN1111</option>
+            <option value="2">SBD2222</option>
+            <option value="3">SBF3333</option>
+        </select>
+    </section>
+
+    <section id="section2">
+        <h2>2. 이름 입력</h2>
+        <input type="text" id="nameInput" placeholder="이름을 입력하세요">
+    </section>
+
+    <section id="section3">
+        <h2>3. 체크박스 및 조건부 입력 <span class="random-info">(새로고침 시 랜덤 설정됨)</span></h2>
+        <label><input type="checkbox" id="dateEnableCheck"> 날짜 입력 활성화</label>
+        <div id="dateInputs" class="hidden">
+            시작일: <input type="date" id="startDate1"> 종료일: <input type="date" id="endDate1">
+            <button onclick="document.getElementById('msg1').innerText='완성되었습니다.'">확인</button>
+            <div id="msg1" class="result-msg"></div>
+        </div>
+    </section>
+
+    <section id="section4">
+        <h2>4. 디폴트 값 확인</h2>
+        <input type="date" id="birthDate" value="1999-01-01">
+        <button onclick="document.getElementById('msg2').innerText='확인되었습니다.'">확인</button>
+        <div id="msg2" class="result-msg"></div>
+    </section>
+
+    <section id="section5">
+        <h2>5. 파일 저장 및 경로 지정 (RPA 핵심 실습)</h2>
+        <p class="info-text">날짜를 입력하고 다운로드를 누르면 <b>'다른 이름으로 저장'</b>창이 뜹니다.</p>
+        시작일: <input type="date" id="startDate2">
+        종료일: <input type="date" id="endDate2">
+        <br>
+        <button onclick="simulateSaveAs()">파일 다운로드 (저장 경로 지정)</button>
+    </section>
+
+    <script>
+        // 페이지 로드 시 실행
+        window.onload = function() {
+            const checkbox = document.getElementById('dateEnableCheck');
+            const dateInputs = document.getElementById('dateInputs');
+            
+            // 50% 확률로 체크박스 상태 결정 (Math.random은 0~1 사이값)
+            const isChecked = Math.random() < 0.5;
+            checkbox.checked = isChecked;
+            
+            // 체크 상태에 따라 입력란 보이기/숨기기 처리
+            if (isChecked) {
+                dateInputs.classList.remove('hidden');
+            } else {
+                dateInputs.classList.add('hidden');
+            }
+        };
+
+        // 체크박스 클릭 시 토글 로직
+        document.getElementById('dateEnableCheck').addEventListener('change', function(e) {
+            const dateInputs = document.getElementById('dateInputs');
+            dateInputs.className = e.target.checked ? '' : 'hidden';
+        });
+
+        // '다른 이름으로 저장' 모달 함수
+        async function simulateSaveAs() {
+            const sDate = document.getElementById('startDate2').value;
+            const eDate = document.getElementById('endDate2').value;
+
+            if(!sDate || !eDate) {
+                alert("시작일과 종료일을 모두 입력해주세요.");
+                return;
+            }
+
+            try {
+                const opts = {
+                    suggestedName: `SHI_Report_${sDate}.txt`,
+                    types: [{
+                        description: 'Text file',
+                        accept: {'text/plain': ['.txt']},
+                    }],
+                };
+                const handle = await window.showSaveFilePicker(opts);
+                const writable = await handle.createWritable();
+                await writable.write(`삼성중공업 RPA 결과 보고서\n기간: ${sDate} ~ ${eDate}`);
+                await writable.close();
+                alert("성공적으로 저장되었습니다.");
+            } catch (err) {
+                console.log("사용자가 저장을 취소했거나 브라우저 권한이 필요합니다.");
+            }
+        }
+    </script>
+</body>
+</html>
