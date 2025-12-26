@@ -50,7 +50,7 @@
         <h2>4. 체크박스 및 조건부 입력 <span class="random-info">(새로고침 시 랜덤 설정됨)</span></h2>
         <label><input type="checkbox" id="dateEnableCheck"> 날짜 입력 활성화</label>
         <div id="dateInputs" class="hidden">
-            시작일: <input type="date" id="startDate1"> 종료일: <input type="date" id="endDate1">
+            시작일: <input type="text" id="startDate1"> 종료일: <input type="text" id="endDate1">
             <button onclick="document.getElementById('msg1').innerText='완성되었습니다.'">확인</button>
             <div id="msg1" class="result-msg"></div>
         </div>
@@ -58,7 +58,7 @@
 
     <section id="section5">
         <h2>5. 디폴트 값 확인</h2>
-        <input type="date" id="birthDate" value="1999-01-01">
+        <input type="text" id="birthDate" value="1999-01-01">
         <button onclick="document.getElementById('msg2').innerText='확인되었습니다.'">확인</button>
         <div id="msg2" class="result-msg"></div>
     </section>
@@ -66,8 +66,8 @@
     <section id="section6">
         <h2>6. 파일 저장 및 경로 지정 (RPA 핵심 실습)</h2>
         <p class="info-text">날짜를 입력하고 다운로드를 누르면 <b>'다른 이름으로 저장'</b>창이 뜹니다.</p>
-        시작일: <input type="date" id="startDate2">
-        종료일: <input type="date" id="endDate2">
+        시작일: <input type="text" id="startDate2">
+        종료일: <input type="text" id="endDate2">
         <br>
         <button onclick="simulateSaveAs()">파일 다운로드 (저장 경로 지정)</button>
     </section>
